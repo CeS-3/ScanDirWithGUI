@@ -210,7 +210,28 @@ void scanGUI::showFilelist() {
 }
 //处理选中的myfile数据文件条目
 void scanGUI::excuteMyfile() {
-    
+    // 获取被选中的项
+    QList<QListWidgetItem*> selectedItems = ui.DataFileList->selectedItems();
+    //处理选中的项
+    myfileLine each(&root);
+    for (QListWidgetItem* item : selectedItems) {
+        //读取该行
+        each.setLine(item->text().toStdString());
+        //进行操作
+        File before(true);
+        File after(true);
+        try {
+            //执行相关操作
+            each.excuteOperation(&before,&after);
+            //若执行成功，展示差异
+            
+        }
+        catch (const std::exception& e) {
+            //如果不存在则报错
+            QMessageBox::critical(this, "错误", e.what(), QMessageBox::Ok);
+            break;
+        }
+    }
 }
 //在列表中显示mydir数据文件的每一条
 void scanGUI::showDirlist() {
@@ -245,7 +266,21 @@ void scanGUI::excuteMydir() {
     // 获取被选中的项
     QList<QListWidgetItem*> selectedItems = ui.DataFileList2->selectedItems();
     //处理选中的项
+    mydirLine each(&root);
     for (QListWidgetItem* item : selectedItems) {
-        
+        //读取该行
+        each.setLine(item->text().toStdString());
+        //进行操作
+        DirInfo before;
+        try{
+            each.DeleteOperation(&before);
+        }
+        catch (const std::exception& e) {
+            //如果不存在则报错
+            QMessageBox::critical(this, "错误", "所选文件夹不存在！", QMessageBox::Ok);
+            break;
+        }
     }
+    //展示差异
+
 }

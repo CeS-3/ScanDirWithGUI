@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include"rootDir.h"
+#include"DirInfo.h"
 class DataLine
 {
 public:

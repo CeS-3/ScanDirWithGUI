@@ -4,6 +4,10 @@ class myfileLine : DataLine
 {
 public:
     myfileLine(const std::string OriginLine, rootDir* root) : DataLine(root) {
+        setLine(OriginLine);
+    }
+    myfileLine(rootDir* root): DataLine(root) {}
+    void setLine(std::string OriginLine) {
         //同上
         std::vector<std::string>substr = splitString(OriginLine, ',');
         //取出文件路径
@@ -22,11 +26,7 @@ public:
         //取出新size
         newSize = std::stol(substr[3]);
     }
-
-    void excuteOperation();
-    void AddOperation();
-    void ModifyOperation();
-    void DeleteOperation();
+    void excuteOperation(File* before,File* after);
 private:
     std::string operationCode;  //操作码(A,M,D)
     std::string filename; //操纵的文件名

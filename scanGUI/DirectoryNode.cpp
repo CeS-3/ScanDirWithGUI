@@ -54,10 +54,19 @@ bool DirectoryNode::FileExist(std::string FileName)
     return !(FoundFile == this->files.end());
 }
 
-
-void DirectoryNode::DeletesubFile(const std::string FileName)
+//根据输入的文件名删除该目录下的文件，若删除成功则返回true
+bool DirectoryNode::DeletesubFile(const std::string FileName)
 {
-    this->files.erase(std::remove_if(this->files.begin(), this->files.end(), [FileName](File file) {
-        return FileName == file.GetName();
-        }), this->files.end());
+    int before;
+    if (!this->files.empty()) {
+        before = files.size();
+        this->files.erase(std::remove_if(this->files.begin(), this->files.end(), [FileName](File file) {
+            return FileName == file.GetName();
+            }), this->files.end());
+        //如果删除后文件数不变则表示删除失败
+        return !(this->files.size() == before);
+    }
+    else {
+        return false;
+    }
 }

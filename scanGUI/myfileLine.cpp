@@ -1,76 +1,74 @@
 ﻿#include "myfileLine.h"
 //根据操作码执行对应的操作
-void myfileLine::excuteOperation()
-{
-    if (operationCode == "M")
-        this->ModifyOperation();
-    else if (operationCode == "D")
-        this->DeleteOperation();
-    else if (operationCode == "A")
-        this->AddOperation();
-    else
-        std::cerr << "Unknown operation code: " + operationCode;
-}
-
-//添加文件操作
-void myfileLine::AddOperation()
+void myfileLine::excuteOperation(File* before,File* after)
 {
     try {
+        //搜索目录
         DirectoryNode* targetDir = this->root->SearchDir(TargetDirPath);
-        std::string filepath = TargetDirPath + filename;
-        //检查该文件是否存在
-        if (targetDir->FileExist(filename)) {
-            //若存在直接返回
-            return;
-        }
-        //创建新文件
-        File newFile(filename);
-        //设置时间
-        newFile.changeTime(newTime);
-        //设置大小
-        newFile.changeSize(newSize);
-        //添加该文件
-        targetDir->AddFile(newFile);
-    }
-    catch (const std::runtime_error& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-    }
-}
-//修改文件操作
-void myfileLine::ModifyOperation()
-{
-    try {
-        //先搜索该目录
-        DirectoryNode* targetDir = this->root->SearchDir(TargetDirPath);
-        //再在该目录下搜索文件
+        //搜索文件
         try {
+            //若找到文件
             File targetFile = targetDir->SearchFile(filename);
-            //找到则进行修改
-            targetFile.changeSize(newSize);
-            targetFile.changeTime(newTime);
+            //记录文件
+            *before = targetFile;
+            //操作码为M
+            if (operationCode == "M") {
+                //找到则进行修改
+                targetFile.changeSize(newSize);
+                targetFile.changeTime(newTime);
+                //记录修改后的文件
+                *after = targetFile;
+            }
+            //操作码为D
+            else if (operationCode == "D") {
+                //删除该文件
+                bool flag = targetDir->DeletesubFile(filename);
+                //如果删除成功
+                if (flag)
+                {
+                    //使该文件失效
+                    after->setValid(false);
+                }
+                else {
+                    *after = targetFile;
+                }
+            }
+            else if (operationCode == "A") {
+                //文件已存在，不用添加
+                *after = targetFile;
+            }
+            else {
+                throw std::runtime_error("未知的操作码： " + operationCode);
+            }
         }
         catch (const std::runtime_error& e) {
-            std::cerr << "Error: " << e.what() << std::endl;
-            return;
+            //若未找到文件
+            if (operationCode == "A") {
+                //原先的文件无效
+                before->setValid(false);
+                std::string filepath = TargetDirPath + filename;
+                
+                //创建新文件
+                File newFile(filename);
+                //设置时间
+                newFile.changeTime(newTime);
+                //设置大小
+                newFile.changeSize(newSize);
+                //添加该文件
+                targetDir->AddFile(newFile);
+                //记录修改后的文件
+                *after = newFile;
+            }
+            else if (operationCode == "M" || operationCode == "D") {
+                throw std::runtime_error("该文件不存在！");
+            }
+            else {
+                throw std::runtime_error("未知的操作码： " + operationCode);
+            }
         }
     }
     catch (const std::runtime_error& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        return;
+        throw std::runtime_error("该目录不存在！");
     }
+        
 }
-
-void myfileLine::DeleteOperation()
-{
-    try {
-        //搜索该目录
-        DirectoryNode* targetDir = this->root->SearchDir(TargetDirPath);
-        //再在该目录下删除该文件
-        targetDir->DeletesubFile(filename);
-    }
-    catch (const std::runtime_error& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        return;
-    }
-}
-

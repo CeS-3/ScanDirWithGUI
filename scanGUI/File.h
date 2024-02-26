@@ -8,6 +8,7 @@ public:
         :name(name), ftLastWriteTime(ftCreationTime), nFileSizeHigh(nFileSizeHigh), nFileSizeLow(nFileSizeLow) {}
     File(const std::string name) :name(name) {}
     File(bool valid): valid(valid) {}
+
     //获取文件名
     const std::string& GetName() const {
         return name;
@@ -32,6 +33,20 @@ public:
     void changeTime(long int NewTime);
     bool isValid() {
         return valid;
+    }
+    void setValid(bool flag) {
+        this->valid = flag;
+    }
+    // 复制赋值运算符
+    File& operator=(const File& other) {
+        if (this != &other) {
+            this->name = other.name;
+            this->ftLastWriteTime = other.ftLastWriteTime;
+            this->nFileSizeHigh = other.nFileSizeHigh;
+            this->nFileSizeLow = other.nFileSizeLow;
+            this->valid = other.valid;
+        }
+        return *this;
     }
 private:
     std::string name;   //文件名

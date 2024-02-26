@@ -85,7 +85,6 @@
   <ItemGroup>
     <ClCompile Include="mydirLine.cpp" />
     <ClCompile Include="myfileLine.cpp" />
-    <ClCompile Include="mystat.cpp" />
     <ClCompile Include="mystatLine.cpp" />
     <ClCompile Include="rootDir.cpp" />
     <ClCompile Include="StringOP.cpp" />

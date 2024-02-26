@@ -12,6 +12,7 @@ public:
     DirInfo(std::string DirPath,const File& earliest, const File& latest, int sum, int sumSize,bool valid)
         : DirPath(DirPath), earliestFile(earliest), latestFile(latest), FileSum(sum), FileSumSize(sumSize),valid(valid) {}
     DirInfo(std::string DirPath,bool valid):DirPath(DirPath),valid(valid),earliestFile(valid),latestFile(valid) {}
+    DirInfo():earliestFile(valid), latestFile(valid){}
 };
 
 

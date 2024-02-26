@@ -99,7 +99,7 @@ public:
     bool FileExist(std::string FileName);
 
     //删除该节点下的文件
-    void DeletesubFile(std::string FileName);
+    bool DeletesubFile(std::string FileName);
 
 protected:
     std::string name;

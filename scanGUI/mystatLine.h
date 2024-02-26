@@ -1,12 +1,11 @@
 ﻿#pragma once
 #include "DataLine.h"
-#include"DirInfo.h"
 class mystatLine : DataLine
 {
 public:
     //mystate中的原始行就是目标地址
     mystatLine(std::string OriginLine, rootDir* root) : DataLine(root) {
-        TargetDirPath = OriginLine;
+        setLine(OriginLine);
     }
     mystatLine(rootDir* root): DataLine(root){}
     //设置原始行
