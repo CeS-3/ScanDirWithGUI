@@ -2,14 +2,15 @@
 //mystat中的信息用于指定执行文件信息统计操作
 const DirInfo mystatLine::statisticalOperation()
 {
-    DirectoryNode targetDir;
+    DirectoryNode* targetDir;
     try {
-        targetDir = this->root.SearchDir(this->TargetDirPath);
+        targetDir = this->root->SearchDir(TargetDirPath);
+        DirInfo information(targetDir->GetPath(), targetDir->GetEarliestFile(), targetDir->GetLatestFile(), targetDir->GetFileSum(), targetDir->GetFileSumSize(), true);
+        return information;
     }
     catch (const std::runtime_error& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        throw std::runtime_error("Directory not found: " + targetDir.GetPath());
+        DirInfo badInformation(this->TargetDirPath, false);
+        return badInformation;
     }
-    DirInfo information(targetDir.GetEarliestFile(), targetDir.GetLatestFile(), targetDir.GetFileSum(), targetDir.GetFileSumSize());
-    return information;
+    
 }

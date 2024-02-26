@@ -3,7 +3,7 @@
 class myfileLine : DataLine
 {
 public:
-    myfileLine(const std::string OriginLine, rootDir& root) : DataLine(root) {
+    myfileLine(const std::string OriginLine, rootDir* root) : DataLine(root) {
         //同上
         std::vector<std::string>substr = splitString(OriginLine, ',');
         //取出文件路径

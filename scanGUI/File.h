@@ -7,6 +7,7 @@ public:
     File(const std::string name, const FILETIME ftCreationTime, DWORD nFileSizeHigh, DWORD nFileSizeLow)
         :name(name), ftLastWriteTime(ftCreationTime), nFileSizeHigh(nFileSizeHigh), nFileSizeLow(nFileSizeLow) {}
     File(const std::string name) :name(name) {}
+    File(bool valid): valid(valid) {}
     //获取文件名
     const std::string& GetName() const {
         return name;
@@ -29,9 +30,13 @@ public:
     }
     //改变文件创建时间,输入的是从1970年1月1日开始的秒数
     void changeTime(long int NewTime);
+    bool isValid() {
+        return valid;
+    }
 private:
     std::string name;   //文件名
     FILETIME ftLastWriteTime;        // 创建时间
     DWORD    nFileSizeHigh;         // 文件大小的高 32 位
     DWORD    nFileSizeLow;          // 文件大小的低 32 位
+    bool valid = true;
 };

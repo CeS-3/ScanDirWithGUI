@@ -46,23 +46,33 @@ public:
     //获取最早的文件
     const File GetEarliestFile() const {
         //将初始最早文件设为第一个文件
-        File earliestFile = this->GetFiles()[0];
-        //遍历文件列表获取最早的文件
-        for (const File file : files)
-            if (CompareFileTime(&file.GetLastWriteTime(), &earliestFile.GetLastWriteTime()) < 0)
-                earliestFile = file;
-        return earliestFile;
+        if (!files.empty()) {
+            File earliestFile = this->files.front();
+            //遍历文件列表获取最早的文件
+            for (const File file : files)
+                if (CompareFileTime(&file.GetLastWriteTime(), &earliestFile.GetLastWriteTime()) < 0)
+                    earliestFile = file;
+            return earliestFile;
+        }
+        else {
+            return File(false);
+        }
     }
 
     //获取最晚的文件信息
     const File GetLatestFile() const {
-        //将初始最晚文件设为第一个文件
-        File latestFile = this->GetFiles()[0];
-        //遍历文件列表获取最早的文件
-        for (const File file : files)
-            if (CompareFileTime(&(file.GetLastWriteTime()), &(latestFile.GetLastWriteTime())) > 0)
-                latestFile = file;
-        return latestFile;
+        if (!files.empty()) {
+            //将初始最晚文件设为第一个文件
+            File latestFile = this->files.front();
+            //遍历文件列表获取最早的文件
+            for (const File file : files)
+                if (CompareFileTime(&(file.GetLastWriteTime()), &(latestFile.GetLastWriteTime())) > 0)
+                    latestFile = file;
+            return latestFile;
+        }
+        else {
+            return File(false);
+        }
     }
 
     //获取该目录下文件总数

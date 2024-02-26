@@ -167,44 +167,56 @@ int rootDir::CountDepth() {
 }
 
 //根据所给路径找出对应目录对象
-DirectoryNode& rootDir::SearchDir(const std::string DirPath) {
+DirectoryNode* rootDir::SearchDir(const std::string DirPath) {
     //首先分割路径取出各级目录
     std::vector<std::string> subDir(splitString(DirPath, '\\'));
     //计算出根目录路径的大小，将这部分路径剔除
     std::vector<std::string> rootDir(splitString(this->GetPath(), '\\'));
     int rootLength = rootDir.size();
-    subDir.erase(subDir.begin(), subDir.begin() + rootLength);
+    if (rootLength < subDir.size()) {
+        subDir.erase(subDir.begin(), subDir.begin() + rootLength);
+    }
+    else {
+        // 处理 rootLength 大于或等于 subDir.size() 的情况
+        throw std::runtime_error("Root path is not a prefix of the directory path.");
+    }
     //从根目录开始寻找各目录进行索引
     DirectoryNode* currentDir = this;
-    std::string targetDir;
-    while (!subDir.empty()) {
-        //取出目标
-        targetDir = subDir.front();
-        subDir.erase(subDir.begin());
         //查找目标
-        auto foundDir = std::find_if(currentDir->GetChildren().begin(), currentDir->GetChildren().end(), [targetDir](DirectoryNode* eachDir) {return eachDir->GetName() == targetDir; });
+    for (std::string targetDir : subDir) {
+        std::vector<DirectoryNode*> currentSub = currentDir->GetChildren();
+        bool flag = false;
+        DirectoryNode* foundDir;
+        for (DirectoryNode* eachDir : currentSub)
+        {
+            if (eachDir->GetName() == targetDir) {
+                flag = true;
+                foundDir = eachDir;
+                break;
+            }
+        }
         //检测是否找到
-        if (foundDir == currentDir->GetChildren().end())
-            //没找到就抛出异常
+        if(flag == false)
+        //没找到就抛出异常
             throw std::runtime_error("Directory not found: " + DirPath);
         //如果找到则移动到下一级
-        currentDir = *foundDir;
+        currentDir = foundDir;
     }
     //返回找到的目录
-    return *currentDir;
+    return currentDir;
 }
 
-void rootDir::CreateSQL()
+void rootDir::CreateSQL(const std::string Path)
 {
     //开启文件用于写入生成的语句
-    std::ofstream File("D:\\sqlFile\\file.sql");
+    std::ofstream File(Path + "\\file.sql");
     if (!File.is_open()) {
-        std::cerr << "file文件开启失败" << std::endl;
+        throw std::runtime_error("file文件开启失败");
         return;
     }
-    std::ofstream Dir("D:\\sqlFile\\dir.sql");
+    std::ofstream Dir(Path + "\\dir.sql");
     if (!File.is_open()) {
-        std::cerr << "dir文件开启失败" << std::endl;
+        throw std::runtime_error("dir文件开启失败");
         return;
     }
     //生成根目录信息

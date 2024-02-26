@@ -16,10 +16,10 @@ void myfileLine::excuteOperation()
 void myfileLine::AddOperation()
 {
     try {
-        DirectoryNode targetDir = this->root.SearchDir(TargetDirPath);
+        DirectoryNode* targetDir = this->root->SearchDir(TargetDirPath);
         std::string filepath = TargetDirPath + filename;
         //检查该文件是否存在
-        if (targetDir.FileExist(filename)) {
+        if (targetDir->FileExist(filename)) {
             //若存在直接返回
             return;
         }
@@ -30,7 +30,7 @@ void myfileLine::AddOperation()
         //设置大小
         newFile.changeSize(newSize);
         //添加该文件
-        targetDir.AddFile(newFile);
+        targetDir->AddFile(newFile);
     }
     catch (const std::runtime_error& e) {
         std::cerr << "Error: " << e.what() << std::endl;
@@ -41,10 +41,10 @@ void myfileLine::ModifyOperation()
 {
     try {
         //先搜索该目录
-        DirectoryNode targetDir = this->root.SearchDir(TargetDirPath);
+        DirectoryNode* targetDir = this->root->SearchDir(TargetDirPath);
         //再在该目录下搜索文件
         try {
-            File targetFile = targetDir.SearchFile(filename);
+            File targetFile = targetDir->SearchFile(filename);
             //找到则进行修改
             targetFile.changeSize(newSize);
             targetFile.changeTime(newTime);
@@ -64,9 +64,9 @@ void myfileLine::DeleteOperation()
 {
     try {
         //搜索该目录
-        DirectoryNode targetDir = this->root.SearchDir(TargetDirPath);
+        DirectoryNode* targetDir = this->root->SearchDir(TargetDirPath);
         //再在该目录下删除该文件
-        targetDir.DeletesubFile(filename);
+        targetDir->DeletesubFile(filename);
     }
     catch (const std::runtime_error& e) {
         std::cerr << "Error: " << e.what() << std::endl;

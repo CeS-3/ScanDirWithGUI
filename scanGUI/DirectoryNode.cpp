@@ -22,24 +22,17 @@ std::ostream& operator << (std::ostream& os, DirectoryNode& root) {
 }
 
 DirectoryNode::~DirectoryNode() {
-    //删除该节点
-    DeleteDir();
+    // 递归释放子目录
+    for (DirectoryNode* child : children) {
+        delete child;
+    }
+    children.clear();  // 清空子目录列表
+    files.clear();
 }
 
 void DirectoryNode::DeleteDir()
 {
-    //先对所有子结点进行该操作
-    for (auto child : children) {
-        child->DeleteDir();
-    }
-    // 删除当前目录的文件
-    files.clear();
-    // 删除当前目录的子目录
-    for (auto child : children) {
-        delete child;
-        child = nullptr;
-    }
-    children.clear();
+    delete this;
 }
 
 File& DirectoryNode::SearchFile(std::string FileName)

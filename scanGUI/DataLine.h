@@ -4,9 +4,9 @@ class DataLine
 {
 public:
     //输入原始行进行解析
-    DataLine(rootDir& root) : root(root) {}
+    DataLine(rootDir* root) : root(root) {}
 protected:
-    rootDir root;
+    rootDir* root;
     std::string TargetDirPath;
 };
 

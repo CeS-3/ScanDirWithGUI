@@ -22,13 +22,13 @@ public:
     const int GetMaxNameLength() const {
         return MaxNameLength;
     }
-    DirectoryNode& SearchDir(const std::string DirPath);
-    //用于生成该目录系统的sql文件
-    void CreateSQL();
+    DirectoryNode* SearchDir(const std::string DirPath);
+    //用于生成该目录系统的sql文件,应输入两个路径，第一个为文件表sql文件的路径，第二个为目录表sql文件的路径
+    void CreateSQL(const std::string Path);
 protected:
-    int FileSum;
-    int DirSum;
-    int Depth;
-    int MaxNameLength;
+    int FileSum = 0;
+    int DirSum = 0;
+    int Depth = 0;
+    int MaxNameLength = 0;
     std::string MaxName;
 };
