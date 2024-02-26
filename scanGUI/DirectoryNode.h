@@ -12,8 +12,7 @@
 #include"File.h"
 class DirectoryNode {
 public:
-    DirectoryNode() {}
-    DirectoryNode(const std::string& path, const std::string& name = "root") : path(path), name(name) {}
+    DirectoryNode(const std::string& path = "无", const std::string& name = "root") : path(path), name(name) {}
     ~DirectoryNode();
     // 添加子目录
     void AddChild(DirectoryNode* child) {
@@ -43,7 +42,7 @@ public:
         return files;
     }
 
-    //获取最早的文件
+    //获取最早的文件,若没有文件则返回无效文件
     const File GetEarliestFile() const {
         //将初始最早文件设为第一个文件
         if (!files.empty()) {

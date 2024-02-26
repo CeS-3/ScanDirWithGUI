@@ -15,7 +15,7 @@ void mydirLine::DeleteOperation(DirInfo* before)
         foundDir->DeleteDir();
     }
     catch (const std::runtime_error& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+        before->valid = false;
         return;
     }
 }

@@ -211,6 +211,9 @@
             </widget>
            </widget>
           </item>
+          <item>
+           <widget class="QListWidget" name="differenceOutput"/>
+          </item>
          </layout>
         </widget>
         <widget class="QWidget" name="tab">
@@ -275,6 +278,9 @@
              </property>
             </widget>
            </widget>
+          </item>
+          <item>
+           <widget class="QListWidget" name="differenceOutput2"/>
           </item>
          </layout>
         </widget>

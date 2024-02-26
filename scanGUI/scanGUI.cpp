@@ -263,8 +263,10 @@ void scanGUI::showDirlist() {
 }
 //处理选中的mydir数据文件条目
 void scanGUI::excuteMydir() {
+    ui.differenceOutput2->clear();
     // 获取被选中的项
     QList<QListWidgetItem*> selectedItems = ui.DataFileList2->selectedItems();
+    ui.DataFileList2->clearSelection();
     //处理选中的项
     mydirLine each(&root);
     for (QListWidgetItem* item : selectedItems) {
@@ -272,15 +274,30 @@ void scanGUI::excuteMydir() {
         each.setLine(item->text().toStdString());
         //进行操作
         DirInfo before;
-        try{
-            each.DeleteOperation(&before);
+        each.DeleteOperation(&before);
+        //展示差异
+        //如果目录信息有效
+        std::string difference;
+        if(before.valid){
+            difference += ("目录路径：" + before.DirPath + "\n");
+            difference += "修改前：\n";
+            difference += ("文件数量: " + std::to_string(before.FileSum) + " 文件总大小: " + std::to_string(before.FileSumSize) + "\n");
+            if (before.earliestFile.isValid()) {  //判断文件是否有效
+                difference += ("最早文件: " + before.earliestFile.GetName() + "----" + std::to_string(before.earliestFile.GetSize()) + " bytes----" + before.earliestFile.GetStandLastWriteTime() + "\n");
+                difference += (" 最晚文件: " + before.latestFile.GetName() + "----" + std::to_string(before.latestFile.GetSize()) + " bytes----" + before.latestFile.GetStandLastWriteTime() + "\n");
+                
+            }
+            else {
+                difference += "最早文件: 无\n";
+                difference += "最晚文件: 无\n";
+            }
+            difference += "修改后：\n";
+            difference += "目录不存在";
         }
-        catch (const std::exception& e) {
-            //如果不存在则报错
-            QMessageBox::critical(this, "错误", "所选文件夹不存在！", QMessageBox::Ok);
-            break;
+        else {
+            difference += "目录路径：" + item->text().toStdString() + "\n修改前：\n目录不存在\n修改后：\n目录不存在";
         }
+        ui.differenceOutput2->addItem(QString::fromStdString(difference));
     }
-    //展示差异
 
 }

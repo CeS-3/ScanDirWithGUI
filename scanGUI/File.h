@@ -31,7 +31,7 @@ public:
     }
     //改变文件创建时间,输入的是从1970年1月1日开始的秒数
     void changeTime(long int NewTime);
-    bool isValid() {
+    const bool isValid() const{
         return valid;
     }
     void setValid(bool flag) {
