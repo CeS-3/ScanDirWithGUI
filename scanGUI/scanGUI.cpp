@@ -206,7 +206,7 @@ void scanGUI::showFilelist() {
         ui.DataFileList->addItem(QString::fromStdString(eachline));
     }
     //设置表项可多选
-    ui.DataFileList2->setSelectionMode(QAbstractItemView::MultiSelection);
+    ui.DataFileList->setSelectionMode(QAbstractItemView::MultiSelection);
 }
 //处理选中的myfile数据文件条目
 void scanGUI::excuteMyfile() {
@@ -217,20 +217,31 @@ void scanGUI::excuteMyfile() {
     for (QListWidgetItem* item : selectedItems) {
         //读取该行
         each.setLine(item->text().toStdString());
-        //进行操作
+        //记录修改前后文件
         File before(true);
         File after(true);
-        try {
-            //执行相关操作
-            each.excuteOperation(&before,&after);
-            //若执行成功，展示差异
-            
+        //执行相关操作
+        each.excuteOperation(&before,&after);
+        //展示差异
+        std::string difference;
+        difference += "文件路径: " + each.GetPath();
+        
+        //若两者均为合法，则M操作成功
+        if (before.isValid() && after.isValid()) {
+            difference += ("\n修改前:\n文件名:" + before.GetName() + ",文件大小:" + std::to_string(before.GetSize()) + " bytes,修改时间:" + before.GetStandLastWriteTime());
+            difference += ("\n修改后:\n文件名:" + after.GetName() + ",文件大小:" + std::to_string(after.GetSize()) + " bytes,修改时间:" + after.GetStandLastWriteTime());
         }
-        catch (const std::exception& e) {
-            //如果不存在则报错
-            QMessageBox::critical(this, "错误", e.what(), QMessageBox::Ok);
-            break;
+        //before合法而after非法表示删除操作成功
+        else if (before.isValid() && !after.isValid()) {
+            difference += ("\n修改前:\n文件名:" + before.GetName() + ",文件大小:" + std::to_string(before.GetSize()) + " bytes,修改时间:" + before.GetStandLastWriteTime() + "\n修改后:\n文件不存在");
         }
+        else if (!before.isValid() && after.isValid()) {
+            difference += ("\n修改前:\n文件不存在\n修改后:\n文件名:" + after.GetName() + ",文件大小:" + std::to_string(after.GetSize()) + " bytes,修改时间:" + after.GetStandLastWriteTime());
+        }
+        else {
+            difference += "\n修改失败";
+        }
+        ui.differenceOutput->addItem(QString::fromStdString(difference));
     }
 }
 //在列表中显示mydir数据文件的每一条

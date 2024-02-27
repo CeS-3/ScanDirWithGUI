@@ -25,7 +25,7 @@ public:
         return fileSize;
     }
     //改变文件大小,输入的是字节数
-    void changeSize(long int fileSize) {
+    void changeSize(long long int fileSize) {
         this->nFileSizeHigh = static_cast<DWORD>((fileSize >> 32) & 0xFFFFFFFF);
         this->nFileSizeLow = static_cast<DWORD>(fileSize & 0xFFFFFFFF);
     }
