@@ -24,15 +24,18 @@ std::ostream& operator << (std::ostream& os, DirectoryNode& root) {
 DirectoryNode::~DirectoryNode() {
     // 递归释放子目录
     for (DirectoryNode* child : children) {
-        delete child;
+        //如果已经被置空则说明应被删除
+        if (child != nullptr)
+            delete child;
     }
     children.clear();  // 清空子目录列表
     files.clear();
 }
 
-void DirectoryNode::DeleteDir()
+void DirectoryNode::DeleteDir(DirectoryNode* target)
 {
-    delete this;
+    delete target;
+    target = nullptr;
 }
 
 File& DirectoryNode::SearchFile(std::string FileName)

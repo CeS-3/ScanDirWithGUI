@@ -178,7 +178,7 @@ DirectoryNode* rootDir::SearchDir(const std::string DirPath) {
     }
     else {
         // 处理 rootLength 大于或等于 subDir.size() 的情况
-        throw std::runtime_error("Root path is not a prefix of the directory path.");
+        throw std::runtime_error("该文件不在默认目录下！");
     }
     //从根目录开始寻找各目录进行索引
     DirectoryNode* currentDir = this;

@@ -89,7 +89,7 @@ public:
     }
 
     //删除该结点
-    void DeleteDir();
+    void DeleteDir(DirectoryNode* target);
 
     //搜索特定名称的文件,以便进行文件信息的修改
     File& SearchFile(std::string FileName);
