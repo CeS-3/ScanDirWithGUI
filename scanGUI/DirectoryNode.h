@@ -12,7 +12,7 @@
 #include"File.h"
 class DirectoryNode {
 public:
-    DirectoryNode(const std::string& path = "无", const std::string& name = "root") : path(path), name(name) {}
+    DirectoryNode(const std::string& path = "无", const std::string& name = "root",DirectoryNode* parent = nullptr) : path(path), name(name),parent(parent) {}
     ~DirectoryNode();
     // 添加子目录
     void AddChild(DirectoryNode* child) {
@@ -88,11 +88,12 @@ public:
         return sum;
     }
 
-    //删除该结点
-    void DeleteDir(DirectoryNode* target);
+    //参数为要指向删除的结点的指针
+    static void DeleteDir(DirectoryNode* target);
 
     //搜索特定名称的文件,以便进行文件信息的修改
     File& SearchFile(std::string FileName);
+
 
     //判断该文件是否存在
     bool FileExist(std::string FileName);
@@ -105,5 +106,6 @@ protected:
     std::string path;
     std::vector<DirectoryNode*> children;  // 子目录列表
     std::vector<File> files;       // 文件列表
+    DirectoryNode* parent;  //父母结点指针
 };
 std::ostream& operator << (std::ostream& os, DirectoryNode& root);

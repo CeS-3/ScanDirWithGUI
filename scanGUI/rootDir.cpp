@@ -42,9 +42,9 @@ void rootDir::BuildTreeBFS() {
                 //若为目录，检查是否为.或..等无效目录
                 if (strcmp(findFileData.cFileName, ".") != 0 && strcmp(findFileData.cFileName, "..") != 0) {
                     //如果是有效目录则创建目录对象
-                    DirectoryNode* NewDirP = new(std::nothrow) DirectoryNode(currentDir.first + "\\" + findFileData.cFileName, findFileData.cFileName);
+                    DirectoryNode* NewDirP = new(std::nothrow) DirectoryNode(currentDir.first + "\\" + findFileData.cFileName, findFileData.cFileName,currentDir.second);
                     if (NewDirP == nullptr) {
-                        std::cout << "堆分配失败" << std::endl;
+                        std::cerr << "堆分配失败" << std::endl;
                         return;
                     }
                     //将该子目录对象的指针加入到当前目录的子目录指针列表中
@@ -111,9 +111,9 @@ void rootDir::BuildTreeDFS() {
 
                 if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
                     auto start_time = std::chrono::high_resolution_clock::now(); //记录开始时间
-                    DirectoryNode* newDir = new(std::nothrow) DirectoryNode(newPath, findFileData.cFileName);
+                    DirectoryNode* newDir = new(std::nothrow) DirectoryNode(newPath, findFileData.cFileName, currentDir.second);
                     if (newDir == nullptr) {
-                        std::cout << "堆分配失败" << std::endl;
+                        std::cerr << "堆分配失败" << std::endl;
                         return;
                     }
                     currentDir.second->AddChild(newDir);

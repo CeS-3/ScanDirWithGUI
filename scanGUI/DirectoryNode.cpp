@@ -34,6 +34,19 @@ DirectoryNode::~DirectoryNode() {
 
 void DirectoryNode::DeleteDir(DirectoryNode* target)
 {
+    //先将该节点上层结点的指向该节点的指针置为空，表示该节点被删除
+    //target->parent->children为该结点上层结点的子节点指针向量
+    if (target && target->parent) {
+        // 在父节点的子节点列表中查找目标节点
+        auto it = std::find(target->parent->children.begin(), target->parent->children.end(), target);
+
+        if (it != target->parent->children.end()) {
+            // 找到目标节点，从子节点列表中移除
+            target->parent->children.erase(it);
+        }
+        // 目标节点不在父节点的子节点列表中,也认为删除成功
+    }
+    //删除该节点并置空
     delete target;
     target = nullptr;
 }

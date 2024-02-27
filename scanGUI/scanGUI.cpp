@@ -130,7 +130,7 @@ void scanGUI::showMystatResult(){
                 ui.staInfoTable->setItem(row, 0, item);
                 if (dirinfo.earliestFile.isValid()) {
                     item = new QTableWidgetItem(QString::fromStdString(dirinfo.earliestFile.GetName() + " " \
-                            + std::to_string(dirinfo.earliestFile.GetSize()) + "bytes " + dirinfo.earliestFile.GetStandLastWriteTime()));
+                            + std::to_string(dirinfo.earliestFile.GetSize()) + " bytes " + dirinfo.earliestFile.GetStandLastWriteTime()));
                     ui.staInfoTable->setItem(row, 1, item);
                 }
                 else {
@@ -139,7 +139,7 @@ void scanGUI::showMystatResult(){
                 }
                 if (dirinfo.latestFile.isValid()) {
                     item = new QTableWidgetItem(QString::fromStdString(dirinfo.latestFile.GetName() + " " \
-                            + std::to_string(dirinfo.latestFile.GetSize()) + "bytes " + dirinfo.latestFile.GetStandLastWriteTime()));
+                            + std::to_string(dirinfo.latestFile.GetSize()) + " bytes " + dirinfo.latestFile.GetStandLastWriteTime()));
                     ui.staInfoTable->setItem(row, 2, item);
                 }
                 else {
@@ -293,9 +293,9 @@ void scanGUI::excuteMydir() {
             difference += ("目录路径：" + before.DirPath + "\n");
             difference += "修改前：\n";
             difference += ("文件数量: " + std::to_string(before.FileSum) + " 文件总大小: " + std::to_string(before.FileSumSize) + "\n");
-            if (before.earliestFile.isValid()) {  //判断文件是否有效
-                difference += ("最早文件: " + before.earliestFile.GetName() + "----" + std::to_string(before.earliestFile.GetSize()) + " bytes----" + before.earliestFile.GetStandLastWriteTime() + "\n");
-                difference += (" 最晚文件: " + before.latestFile.GetName() + "----" + std::to_string(before.latestFile.GetSize()) + " bytes----" + before.latestFile.GetStandLastWriteTime() + "\n");
+            if (before.earliestFile.isValid()) {  //判断文件是否有效, 如果没有最早文件则必定没有最晚文件
+                difference += ("最早文件: 文件名：" + before.earliestFile.GetName() + ",文件大小: " + std::to_string(before.earliestFile.GetSize()) + " bytes,时间: " + before.earliestFile.GetStandLastWriteTime() + "\n");
+                difference += (" 最晚文件: 文件名" + before.latestFile.GetName() + ",文件大小: " + std::to_string(before.latestFile.GetSize()) + " bytes,时间: " + before.latestFile.GetStandLastWriteTime() + "\n");
                 
             }
             else {

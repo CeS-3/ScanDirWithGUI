@@ -12,7 +12,7 @@ void mydirLine::DeleteOperation(DirInfo* before)
         before->latestFile = foundDir->GetLatestFile();
         before->valid = true;
         //删除该目录
-        foundDir->DeleteDir();
+        DirectoryNode::DeleteDir(foundDir);
     }
     catch (const std::runtime_error& e) {
         before->valid = false;
