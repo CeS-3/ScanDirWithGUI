@@ -179,6 +179,7 @@ void scanGUI::showMystatResult(){
         //因为还要进行二次与三次统计所以需要阻止用户切换数据文件
         ui.staBrowsebtn->setEnabled(false);
         ui.staInputLine->setReadOnly(true);
+        ui.staNo->setEnabled(false);
         //计数器加1
         staTime++;
     }
@@ -228,6 +229,7 @@ void scanGUI::showMystatResult(){
         //回复输入功能
         ui.staBrowsebtn->setEnabled(true);
         ui.staInputLine->setReadOnly(false);
+        ui.staNo->setEnabled(true);
     }
 }
 //将生成的sql语句保存在指定目录下
