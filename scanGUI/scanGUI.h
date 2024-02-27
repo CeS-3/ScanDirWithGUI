@@ -32,4 +32,11 @@ private:
     Ui::scanGUIClass ui;
     //目录树的根目录
     rootDir root;
+    //记录统计次数的计数器
+    int staTime = 0;
+    //存储三次统计信息的向量
+    std::vector<DirInfo> first;
+    std::vector<DirInfo> second;
+    std::vector<DirInfo> third;
+    
 };

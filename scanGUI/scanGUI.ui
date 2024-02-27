@@ -23,7 +23,7 @@
          <bool>true</bool>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>1</number>
         </property>
         <property name="tabsClosable">
          <bool>false</bool>
@@ -100,6 +100,9 @@
           </item>
           <item>
            <widget class="QTableWidget" name="staInfoTable"/>
+          </item>
+          <item>
+           <widget class="QTextBrowser" name="DifferenceOutput"/>
           </item>
          </layout>
         </widget>
@@ -312,12 +315,12 @@
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>435</x>
-     <y>338</y>
+     <x>120</x>
+     <y>93</y>
     </hint>
     <hint type="destinationlabel">
-     <x>300</x>
-     <y>187</y>
+     <x>120</x>
+     <y>84</y>
     </hint>
    </hints>
   </connection>
@@ -360,8 +363,8 @@
    <slot>clearSelection()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>397</x>
-     <y>345</y>
+     <x>571</x>
+     <y>245</y>
     </hint>
     <hint type="destinationlabel">
      <x>313</x>
@@ -376,12 +379,12 @@
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>389</x>
-     <y>107</y>
+     <x>120</x>
+     <y>88</y>
     </hint>
     <hint type="destinationlabel">
-     <x>341</x>
-     <y>74</y>
+     <x>120</x>
+     <y>84</y>
     </hint>
    </hints>
   </connection>
@@ -392,12 +395,12 @@
    <slot>clearSelection()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>406</x>
-     <y>339</y>
+     <x>120</x>
+     <y>96</y>
     </hint>
     <hint type="destinationlabel">
-     <x>390</x>
-     <y>284</y>
+     <x>102</x>
+     <y>62</y>
     </hint>
    </hints>
   </connection>

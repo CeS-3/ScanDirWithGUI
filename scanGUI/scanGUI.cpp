@@ -46,6 +46,7 @@ void scanGUI::showstatic()
 
     // 设置第一列的内容
     for (int row = 0; row < 5; ++row) {
+        //QTableWidgetItem对象在程序结束后会自动销毁，不会产生内存泄漏现象
         QTableWidgetItem* item = new QTableWidgetItem(dirSumList[row]);
         ui.DirSystemInfoTable->setItem(row, 0, item);
     }
@@ -87,59 +88,67 @@ void scanGUI::onChoosePathButtonClicked4()
         ui.simPathLine2->setText(directory);
     }
 }
-//根据数据文件mystat进行文件统计并填充入表格ui.staInfoTable中
+//使用一个计数器记录调用次数
+//第一次调用根据数据文件mystat进行文件统计得到数据组first并填充入表格ui.staInfoTable中，若统计成功则使调用次数加1,并阻止对数据文件路径的修改
+//按钮变为"再次统计"，第二次按下按钮则会对数据再次进行统计得到数据组second，并与first进行对比得出差异写入输出台中，
+//第三次按下按钮则再次统计数据并得到third,经过对比得到差异进行输出，此时恢复输入数据文件路径的功能，计数器归零
 void scanGUI::showMystatResult(){
-        //获取路径
-        std::string targetFilePath = (ui.staInputLine->text()).toStdString();
-        std::ifstream datafile(targetFilePath);
-        if (!datafile.is_open()) {
-            QMessageBox::critical(this, "错误", "该文件不存在！", QMessageBox::Ok);
-            return;
-        }
-        //解析该文件
-        std::string eachline;
-        //读取数据文件中的第一行
-        std::getline(datafile, eachline);
-        if (eachline != "stat dirs")
-        {
-            //进行错误处理
-            QMessageBox::critical(this, "错误", "该文件格式不匹配！", QMessageBox::Ok);
-            return;
-        }
-        std::vector<DirInfo> dirinfos;
+    //三次调用都需要获取路径并检查文件格式
+    //获取路径
+    std::string targetFilePath = (ui.staInputLine->text()).toStdString();
+    std::ifstream datafile(targetFilePath);
+    if (!datafile.is_open()) {
+        QMessageBox::critical(this, "错误", "该文件不存在！", QMessageBox::Ok);
+        return;
+    }
+    //解析该文件
+    std::string eachline;
+    //读取数据文件中的第一行
+    std::getline(datafile, eachline);
+    if (eachline != "stat dirs")
+    {
+        //进行错误处理
+        QMessageBox::critical(this, "错误", "该文件格式不匹配！", QMessageBox::Ok);
+        return;
+    }
+    //如果是第一次调用该函数
+    if (staTime == 0) {
+        //先清空第一次统计的结果
+        first.clear();
         mystatLine each(&root);
+        //进行统计
         while (std::getline(datafile, eachline)) {
             if (eachline == "end of dirs")
                 break;
             each.setLine(eachline);
-            dirinfos.push_back(each.statisticalOperation());
+            first.push_back(each.statisticalOperation());
         }
         //生成一个五列多行的表格
-        ui.staInfoTable->setRowCount(dirinfos.size()); // 设置行数
+        ui.staInfoTable->setRowCount(first.size()); // 设置行数
         ui.staInfoTable->setColumnCount(5); // 设置列数
         //生成列头
         QStringList header;
         header << "目录" << "最早时间的文件" << "最晚时间的文件" << "文件总数" << "总的文件大小";
         ui.staInfoTable->setHorizontalHeaderLabels(header);
         // 设置表内容
-        for (int row = 0; row < dirinfos.size(); row++) {
-            DirInfo dirinfo = dirinfos[row];
+        for (int row = 0; row < first.size(); row++) {
+            DirInfo dirinfo = first[row];
             if (dirinfo.valid) {
                 //设置该行内容
                 QTableWidgetItem* item = new QTableWidgetItem(QString::fromStdString(dirinfo.DirPath));
                 ui.staInfoTable->setItem(row, 0, item);
                 if (dirinfo.earliestFile.isValid()) {
                     item = new QTableWidgetItem(QString::fromStdString(dirinfo.earliestFile.GetName() + " " \
-                            + std::to_string(dirinfo.earliestFile.GetSize()) + " bytes " + dirinfo.earliestFile.GetStandLastWriteTime()));
+                        + std::to_string(dirinfo.earliestFile.GetSize()) + " bytes " + dirinfo.earliestFile.GetStandLastWriteTime()));
                     ui.staInfoTable->setItem(row, 1, item);
                 }
                 else {
-                      item = new QTableWidgetItem(QString::fromStdString("无"));
-                      ui.staInfoTable->setItem(row, 1, item);
+                    item = new QTableWidgetItem(QString::fromStdString("无"));
+                    ui.staInfoTable->setItem(row, 1, item);
                 }
                 if (dirinfo.latestFile.isValid()) {
                     item = new QTableWidgetItem(QString::fromStdString(dirinfo.latestFile.GetName() + " " \
-                            + std::to_string(dirinfo.latestFile.GetSize()) + " bytes " + dirinfo.latestFile.GetStandLastWriteTime()));
+                        + std::to_string(dirinfo.latestFile.GetSize()) + " bytes " + dirinfo.latestFile.GetStandLastWriteTime()));
                     ui.staInfoTable->setItem(row, 2, item);
                 }
                 else {
@@ -165,6 +174,61 @@ void scanGUI::showMystatResult(){
         ui.staInfoTable->resizeRowsToContents();
         ui.staInfoTable->resizeColumnsToContents();
         QMessageBox::information(this, "提示", "统计完成", QMessageBox::Ok);
+        //设置按钮上的文本为再次统计
+        ui.staYes->setText("再次统计");
+        //因为还要进行二次与三次统计所以需要阻止用户切换数据文件
+        ui.staBrowsebtn->setEnabled(false);
+        ui.staInputLine->setReadOnly(true);
+        //计数器加1
+        staTime++;
+    }
+    //如果是第二次调用该函数
+    else if (staTime == 1) {
+        //先清空第二次统计的结果
+        second.clear();
+        mystatLine each(&root);
+        //进行统计
+        while (std::getline(datafile, eachline)) {
+            if (eachline == "end of dirs")
+                break;
+            each.setLine(eachline);
+            second.push_back(each.statisticalOperation());
+        }
+        //将第一次结果与第二次统计结果对比寻找差异
+        std::string output;
+        DirInfo::differ(first, second, output);
+        //输出
+        ui.DifferenceOutput->append(QString::fromStdString(output));
+        //计数器加1
+        staTime++;
+    }
+    //若为第三次调用该函数
+    else if (staTime == 2) {
+        //先清空第三次统计的结果
+        third.clear();
+        mystatLine each(&root);
+        //进行统计
+        while (std::getline(datafile, eachline)) {
+            if (eachline == "end of dirs")
+                break;
+            each.setLine(eachline);
+            third.push_back(each.statisticalOperation());
+        }
+        //将第一次结果与第三次统计结果对比寻找差异
+        std::string output;
+        DirInfo::differ(first, third, output);
+        //先清空第二次的输出
+        ui.DifferenceOutput->clear();
+        //输出
+        ui.DifferenceOutput->append(QString::fromStdString(output));
+        //将计数器归0
+        staTime = 0;
+        //设置按钮上的文本为确定
+        ui.staYes->setText("确定");
+        //回复输入功能
+        ui.staBrowsebtn->setEnabled(true);
+        ui.staInputLine->setReadOnly(false);
+    }
 }
 //将生成的sql语句保存在指定目录下
 void scanGUI::saveSqlFile() {
@@ -290,23 +354,12 @@ void scanGUI::excuteMydir() {
         //如果目录信息有效
         std::string difference;
         if(before.valid){
-            difference += ("目录路径：" + before.DirPath + "\n");
-            difference += "修改前：\n";
-            difference += ("文件数量: " + std::to_string(before.FileSum) + " 文件总大小: " + std::to_string(before.FileSumSize) + "\n");
-            if (before.earliestFile.isValid()) {  //判断文件是否有效, 如果没有最早文件则必定没有最晚文件
-                difference += ("最早文件: 文件名：" + before.earliestFile.GetName() + ",文件大小: " + std::to_string(before.earliestFile.GetSize()) + " bytes,时间: " + before.earliestFile.GetStandLastWriteTime() + "\n");
-                difference += (" 最晚文件: 文件名" + before.latestFile.GetName() + ",文件大小: " + std::to_string(before.latestFile.GetSize()) + " bytes,时间: " + before.latestFile.GetStandLastWriteTime() + "\n");
-                
-            }
-            else {
-                difference += "最早文件: 无\n";
-                difference += "最晚文件: 无\n";
-            }
-            difference += "修改后：\n";
+            difference += "修改前:\n" + before.outPut();
+            difference += "修改后:\n";
             difference += "目录不存在";
         }
         else {
-            difference += "目录路径：" + item->text().toStdString() + "\n修改前：\n目录不存在\n修改后：\n目录不存在";
+            difference += "目录路径:" + item->text().toStdString() + "\n修改前:\n目录不存在\n修改后:\n目录不存在";
         }
         ui.differenceOutput2->addItem(QString::fromStdString(difference));
     }

@@ -89,6 +89,7 @@
     <ClCompile Include="rootDir.cpp" />
     <ClCompile Include="StringOP.cpp" />
     <ClCompile Include="TimeConvert.cpp" />
+    <ClCompile Include="DirInfo.cpp" />
     <QtRcc Include="scanGUI.qrc" />
     <QtUic Include="scanGUI.ui" />
     <QtMoc Include="scanGUI.h" />

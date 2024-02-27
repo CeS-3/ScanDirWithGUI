@@ -48,6 +48,13 @@ public:
         }
         return *this;
     }
+    bool operator==(const File& other) const{
+        return (name == other.name && !CompareFileTime(&ftLastWriteTime, &(other.ftLastWriteTime)) && nFileSizeHigh == other.nFileSizeHigh && \
+            nFileSizeLow == other.nFileSizeLow && valid == other.valid);
+    }
+    bool operator!=(const File& other) const{
+        return !(*this == other);
+    }
 private:
     std::string name;   //文件名
     FILETIME ftLastWriteTime;        // 创建时间
