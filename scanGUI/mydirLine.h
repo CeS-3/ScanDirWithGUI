@@ -15,5 +15,5 @@ public:
         TargetDirPath = substr.front();
     }
     //操作为删除操作
-    void DeleteOperation(DirInfo* before);
+    void DeleteOperation(std::vector<DirInfo>* before);
 };

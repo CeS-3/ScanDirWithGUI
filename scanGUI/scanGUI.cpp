@@ -33,7 +33,7 @@ scanGUI::~scanGUI()
 void scanGUI::showstatic()
 {
     //建树
-    root.BuildTreeBFS();
+    root.BuildTreeDFS();
     //动态生成行和列
     ui.DirSystemInfoTable->setRowCount(5); // 设置行数
     ui.DirSystemInfoTable->setColumnCount(1); // 设置列数
@@ -199,7 +199,10 @@ void scanGUI::showMystatResult(){
         std::string output;
         DirInfo::differ(first, second, output);
         //输出
-        ui.DifferenceOutput->append(QString::fromStdString(output));
+        if (output != "")
+            ui.DifferenceOutput->append(QString::fromStdString(output));
+        else
+            ui.DifferenceOutput->append(QString::fromStdString("无差异"));
         //计数器加1
         staTime++;
     }
@@ -221,7 +224,10 @@ void scanGUI::showMystatResult(){
         //先清空第二次的输出
         ui.DifferenceOutput->clear();
         //输出
-        ui.DifferenceOutput->append(QString::fromStdString(output));
+        if(output != "")
+            ui.DifferenceOutput->append(QString::fromStdString(output));
+        else
+            ui.DifferenceOutput->append(QString::fromStdString("无差异"));
         //将计数器归0
         staTime = 0;
         //设置按钮上的文本为确定
@@ -266,6 +272,8 @@ void scanGUI::showFilelist() {
         QMessageBox::critical(this, "错误", "该文件格式不匹配！", QMessageBox::Ok);
         return;
     }
+    //将原列表清空
+    ui.DataFileList->clear();
     while (std::getline(datafile, eachline)) {
         if (eachline == "end of files")
             break;
@@ -330,6 +338,8 @@ void scanGUI::showDirlist() {
         QMessageBox::critical(this, "错误", "该文件格式不匹配！", QMessageBox::Ok);
         return;
     }
+    //将原列表清空
+    ui.DataFileList2->clear();
     while (std::getline(datafile, eachline)) {
         if (eachline == "end of dirs")
             break;
@@ -350,20 +360,21 @@ void scanGUI::excuteMydir() {
         //读取该行
         each.setLine(item->text().toStdString());
         //进行操作
-        DirInfo before;
+        std::vector<DirInfo> before;
         each.DeleteOperation(&before);
         //展示差异
-        //如果目录信息有效
-        std::string difference;
-        if(before.valid){
-            difference += "修改前:\n" + before.outPut();
-            difference += "修改后:\n";
-            difference += "目录不存在";
+        for (DirInfo eachInfo : before) {
+            std::string difference;
+            if (eachInfo.valid) {
+                difference += "修改前:\n" + eachInfo.outPut();
+                difference += "修改后:\n";
+                difference += "目录不存在";
+            }
+            else {
+                difference += "目录路径:" + item->text().toStdString() + "\n修改前:\n目录不存在\n修改后:\n目录不存在";
+            }
+            ui.differenceOutput2->addItem(QString::fromStdString(difference));
         }
-        else {
-            difference += "目录路径:" + item->text().toStdString() + "\n修改前:\n目录不存在\n修改后:\n目录不存在";
-        }
-        ui.differenceOutput2->addItem(QString::fromStdString(difference));
     }
 
 }

@@ -4,6 +4,7 @@
 #include"TimeConvert.h"
 class File {
 public:
+    //构造函数
     File(const std::string name, const FILETIME ftCreationTime, DWORD nFileSizeHigh, DWORD nFileSizeLow)
         :name(name), ftLastWriteTime(ftCreationTime), nFileSizeHigh(nFileSizeHigh), nFileSizeLow(nFileSizeLow) {}
     File(const std::string name) :name(name) {}
@@ -13,30 +14,38 @@ public:
     const std::string& GetName() const {
         return name;
     }
-    //获取原始文件最后修改时间
+
+    //获取原始文件最后修改时间，返回FILETIME原始数据
     const FILETIME& GetLastWriteTime() const {
         return ftLastWriteTime;
     }
-    //获取标准文件创建时间
+
+    //获取标准文件创建时间，以标准时间的形式
     const std::string GetStandLastWriteTime() const;
+
     //获取文件大小，单位为bytes
     const unsigned long GetSize() const {
         unsigned long fileSize = static_cast<unsigned long>(nFileSizeHigh) << 32 | nFileSizeLow;
         return fileSize;
     }
+
     //改变文件大小,输入的是字节数
     void changeSize(long long int fileSize) {
         this->nFileSizeHigh = static_cast<DWORD>((fileSize >> 32) & 0xFFFFFFFF);
         this->nFileSizeLow = static_cast<DWORD>(fileSize & 0xFFFFFFFF);
     }
+
     //改变文件创建时间,输入的是从1970年1月1日开始的秒数
     void changeTime(long int NewTime);
     const bool isValid() const{
         return valid;
     }
+
+    //设置有效性
     void setValid(bool flag) {
         this->valid = flag;
     }
+
     // 复制赋值运算符
     File& operator=(const File& other) {
         if (this != &other) {
@@ -48,13 +57,16 @@ public:
         }
         return *this;
     }
+
     bool operator==(const File& other) const{
         return (name == other.name && !CompareFileTime(&ftLastWriteTime, &(other.ftLastWriteTime)) && nFileSizeHigh == other.nFileSizeHigh && \
             nFileSizeLow == other.nFileSizeLow && valid == other.valid);
     }
+
     bool operator!=(const File& other) const{
         return !(*this == other);
     }
+
 private:
     std::string name;   //文件名
     FILETIME ftLastWriteTime;        // 创建时间

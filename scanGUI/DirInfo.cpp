@@ -6,7 +6,7 @@ std::string DirInfo::outPut() const {
         output += ("文件数量: " + std::to_string(this->FileSum) + " 文件总大小: " + std::to_string(this->FileSumSize) + "\n");
         if (this->earliestFile.isValid()) {  //判断文件是否有效, 如果没有最早文件则必定没有最晚文件
             output += ("最早文件: 文件名：" + this->earliestFile.GetName() + ",文件大小: " + std::to_string(this->earliestFile.GetSize()) + " bytes,时间: " + this->earliestFile.GetStandLastWriteTime() + "\n");
-            output += (" 最晚文件: 文件名" + this->latestFile.GetName() + ",文件大小: " + std::to_string(this->latestFile.GetSize()) + " bytes,时间: " + this->latestFile.GetStandLastWriteTime() + "\n");
+            output += ("最晚文件: 文件名" + this->latestFile.GetName() + ",文件大小: " + std::to_string(this->latestFile.GetSize()) + " bytes,时间: " + this->latestFile.GetStandLastWriteTime() + "\n");
         }
         else {
             output += "最早文件: 无\n";
@@ -26,6 +26,10 @@ void DirInfo::differ(const std::vector<DirInfo>& first, const std::vector<DirInf
                 output += "发生修改: \n";
                 output += "修改前: \n" + first[i].outPut() + "\n";
                 output += "修改后: \n" + second[i].outPut() + "\n";
+                if (first[i].FileSum != second[i].FileSum)
+                    output += "文件个数差异: " + std::to_string(second[i].FileSum - first[i].FileSum) + "\n\n";
+                else if (first[i].FileSumSize != second[i].FileSumSize)
+                    output += "文件总大小差异: " + std::to_string(second[i].FileSumSize - first[i].FileSumSize) + " bytes\n\n";
             }
         }
         //如果第一次数据非法且第二次合法

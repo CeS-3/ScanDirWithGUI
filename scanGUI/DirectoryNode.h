@@ -14,30 +14,32 @@ class DirectoryNode {
 public:
     DirectoryNode(const std::string& path = "无", const std::string& name = "root",DirectoryNode* parent = nullptr) : path(path), name(name),parent(parent) {}
     ~DirectoryNode();
-    // 添加子目录
+    // 添加子目录，输入该子目录结点的指针
     void AddChild(DirectoryNode* child) {
         children.push_back(child);
     }
 
-    // 添加文件
+    // 添加文件，输入一个文件类变量
     void AddFile(const File file) {
         files.push_back(file);
     }
 
-    // 获取目录名称
+    // 获取目录名称，返回记录名称的字符串
     const std::string& GetName() const {
         return name;
     }
-    //获取目录路径
+
+    //获取目录路径，返回路径字符串
     const std::string& GetPath() const {
         return path;
     }
-    // 获取子目录列表
+
+    // 获取子目录列表，返回子目录指针的向量
     const std::vector<DirectoryNode*>& GetChildren() const {
         return children;
     }
 
-    // 获取文件列表
+    // 获取文件列表，返回子文件的向量
     const std::vector<File>& GetFiles() const {
         return files;
     }
