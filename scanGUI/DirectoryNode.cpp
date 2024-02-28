@@ -1,4 +1,6 @@
 ﻿#include "DirectoryNode.h"
+
+//重载<<运算符 输出该目录下的所有文件与子目录，传入ostream类对象与结点指针
 std::ostream& operator << (std::ostream& os, DirectoryNode& root) {
     //先将根入队列
     std::queue<DirectoryNode*> NodeQue;
@@ -21,6 +23,7 @@ std::ostream& operator << (std::ostream& os, DirectoryNode& root) {
     return os;
 }
 
+//析构函数
 DirectoryNode::~DirectoryNode() {
     // 递归释放子目录
     for (DirectoryNode* child : children) {
@@ -32,6 +35,7 @@ DirectoryNode::~DirectoryNode() {
     files.clear();
 }
 
+//参数为要指向删除的结点的指针
 void DirectoryNode::DeleteDir(DirectoryNode* target)
 {
     //先将该节点上层结点的指向该节点的指针置为空，表示该节点被删除
@@ -51,6 +55,7 @@ void DirectoryNode::DeleteDir(DirectoryNode* target)
     target = nullptr;
 }
 
+//搜索特定名称的文件,以便进行文件信息的修改，输入文件名输出文件，返回文件类对象
 File& DirectoryNode::SearchFile(std::string FileName)
 {
     auto FoundFile = std::find_if(this->files.begin(), this->files.end(), [FileName](File eachFile) {
@@ -61,6 +66,7 @@ File& DirectoryNode::SearchFile(std::string FileName)
         throw std::runtime_error("File not found: " + FileName);
     return *FoundFile;
 }
+
 //判断该目录下是否有该文件，有则返回true，否则返回false
 bool DirectoryNode::FileExist(std::string FileName)
 {

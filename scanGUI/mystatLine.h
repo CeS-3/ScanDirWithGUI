@@ -7,11 +7,15 @@ public:
     mystatLine(std::string OriginLine, rootDir* root) : DataLine(root) {
         setLine(OriginLine);
     }
+    
+    //只接收一个rootDir的指针
     mystatLine(rootDir* root): DataLine(root){}
+
     //设置原始行
     void setLine(std::string OriginLine) {
         TargetDirPath = OriginLine;
     }
+
     //统计操作,返回统计所得目录信息对象
     const DirInfo statisticalOperation();
 };

@@ -1,4 +1,5 @@
 #include "rootDir.h"
+// 构建目录树 - 广度优先搜索
 void rootDir::BuildTreeBFS() {
     //先判断根目录的路径是否存在
     std::string searchPath = this->GetPath() + "\\*";  //构造路径
@@ -81,6 +82,8 @@ void rootDir::BuildTreeBFS() {
     //构造完成后，初始化目录层数
     Depth = CountDepth();
 }
+
+// 构建目录树 - 深度优先搜索
 void rootDir::BuildTreeDFS() {
     // 使用栈来模拟深度优先遍历
 
@@ -139,6 +142,8 @@ void rootDir::BuildTreeDFS() {
     //最终计算一次树的深度
     Depth = CountDepth();
 }
+
+// 计算目录树深度
 int rootDir::CountDepth() {
     if (this == nullptr)
         return 0;
@@ -166,7 +171,7 @@ int rootDir::CountDepth() {
     return depth;
 }
 
-//根据所给路径找出对应目录对象
+// 搜索目录，输入一个目录绝对路径，返回指向该目录节点的指针
 DirectoryNode* rootDir::SearchDir(const std::string DirPath) {
     //首先分割路径取出各级目录
     std::vector<std::string> subDir(splitString(DirPath, '\\'));
@@ -206,6 +211,7 @@ DirectoryNode* rootDir::SearchDir(const std::string DirPath) {
     return currentDir;
 }
 
+// 用于生成该目录系统的SQL文件，应输入两个路径，第一个为文件表SQL文件的路径，第二个为目录表SQL文件的路径
 void rootDir::CreateSQL(const std::string Path)
 {
     //开启文件用于写入生成的语句

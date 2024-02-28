@@ -1,5 +1,6 @@
 ﻿#include "mydirLine.h"
-//删除目录操作
+
+//传入文件信息类型指针的向量，用于存储删除操作前的目录及其子目录的信息
 void mydirLine::DeleteOperation(std::vector<DirInfo>* before)
 {
     //先查找该目录

@@ -37,6 +37,8 @@ public:
 
     //改变文件创建时间,输入的是从1970年1月1日开始的秒数
     void changeTime(long int NewTime);
+
+    //判断文件是否有效
     const bool isValid() const{
         return valid;
     }
@@ -58,11 +60,13 @@ public:
         return *this;
     }
 
+    //重载等号运算符
     bool operator==(const File& other) const{
         return (name == other.name && !CompareFileTime(&ftLastWriteTime, &(other.ftLastWriteTime)) && nFileSizeHigh == other.nFileSizeHigh && \
             nFileSizeLow == other.nFileSizeLow && valid == other.valid);
     }
 
+    //相应得设计不等号
     bool operator!=(const File& other) const{
         return !(*this == other);
     }

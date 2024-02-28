@@ -90,17 +90,17 @@ public:
         return sum;
     }
 
-    //参数为要指向删除的结点的指针
+    //参数为要指向删除的结点的指针，删除该文件节点及其子目录结点
     static void DeleteDir(DirectoryNode* target);
 
-    //搜索特定名称的文件,以便进行文件信息的修改
+    //搜索特定名称的文件,输入文件名，返回文件类对象，以便进行文件信息的修改
     File& SearchFile(std::string FileName);
 
 
-    //判断该文件是否存在
+    //判断输入文件名，该文件是否为该目录节点的子文件，是则返回true，否则false
     bool FileExist(std::string FileName);
 
-    //删除该节点下的文件
+    //删除该节点下的文件，输入文件名
     bool DeletesubFile(std::string FileName);
 
 protected:

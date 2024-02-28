@@ -29,6 +29,7 @@ scanGUI::scanGUI(QWidget *parent,std::string rootPath)
 
 scanGUI::~scanGUI()
 {}
+
 //用于展示总体统计数据
 void scanGUI::showstatic()
 {
@@ -55,7 +56,8 @@ void scanGUI::showstatic()
     ui.DirSystemInfoTable->resizeColumnsToContents();
     QMessageBox::information(this, "提示", "扫描完成", QMessageBox::Ok);
 }
-//用于打开文件搜索界面
+
+//用于打开页面1的文件搜索界面
 void scanGUI::onChoosePathButtonClicked1()
 {
     QString directory = QFileDialog::getOpenFileName(this, "选择文件", QDir::homePath());
@@ -64,6 +66,8 @@ void scanGUI::onChoosePathButtonClicked1()
         ui.staInputLine->setText(directory);
     }
 }
+
+//用于打开页面2的文件搜索界面
 void scanGUI::onChoosePathButtonClicked2()
 {
     QString directory = QFileDialog::getExistingDirectory(this, "选择文件夹", QDir::homePath());
@@ -72,6 +76,8 @@ void scanGUI::onChoosePathButtonClicked2()
         ui.sqlPathInputLIine->setText(directory);
     }
 }
+
+//用于打开页面3的文件搜索界面
 void scanGUI::onChoosePathButtonClicked3()
 {
     QString directory = QFileDialog::getOpenFileName(this, "选择文件", QDir::homePath());
@@ -80,6 +86,8 @@ void scanGUI::onChoosePathButtonClicked3()
         ui.simPathLine->setText(directory);
     }
 }
+
+//用于打开页面4的文件搜索界面
 void scanGUI::onChoosePathButtonClicked4()
 {
     QString directory = QFileDialog::getOpenFileName(this, "选择文件", QDir::homePath());
@@ -88,6 +96,7 @@ void scanGUI::onChoosePathButtonClicked4()
         ui.simPathLine2->setText(directory);
     }
 }
+
 //使用一个计数器记录调用次数
 //第一次调用根据数据文件mystat进行文件统计得到数据组first并填充入表格ui.staInfoTable中，若统计成功则使调用次数加1,并阻止对数据文件路径的修改
 //按钮变为"再次统计"，第二次按下按钮则会对数据再次进行统计得到数据组second，并与first进行对比得出差异写入输出台中，
@@ -238,6 +247,7 @@ void scanGUI::showMystatResult(){
         ui.staNo->setEnabled(true);
     }
 }
+
 //将生成的sql语句保存在指定目录下
 void scanGUI::saveSqlFile() {
     //获取路径
@@ -251,8 +261,8 @@ void scanGUI::saveSqlFile() {
         QMessageBox::critical(this, "错误", "文件夹不存在！", QMessageBox::Ok);
     }
 }
-//在列表中显示myfile数据文件的每一条
 
+//在列表中显示myfile数据文件的每一条
 void scanGUI::showFilelist() {
     //获取路径字符串
     QString text = ui.simPathLine->text();
@@ -282,6 +292,7 @@ void scanGUI::showFilelist() {
     //设置表项可多选
     ui.DataFileList->setSelectionMode(QAbstractItemView::MultiSelection);
 }
+
 //处理选中的myfile数据文件条目
 void scanGUI::excuteMyfile() {
     // 获取被选中的项
@@ -318,6 +329,7 @@ void scanGUI::excuteMyfile() {
         ui.differenceOutput->addItem(QString::fromStdString(difference));
     }
 }
+
 //在列表中显示mydir数据文件的每一条
 void scanGUI::showDirlist() {
     //获取路径字符串
@@ -348,6 +360,7 @@ void scanGUI::showDirlist() {
     //设置表项可多选
     ui.DataFileList2->setSelectionMode(QAbstractItemView::MultiSelection);
 }
+
 //处理选中的mydir数据文件条目
 void scanGUI::excuteMydir() {
     ui.differenceOutput2->clear();

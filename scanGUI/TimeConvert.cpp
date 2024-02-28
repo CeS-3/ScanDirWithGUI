@@ -1,5 +1,6 @@
 ﻿#include "TimeConvert.h"
 
+//传入一个长整型数，作为unixtime，转化为系统时返回
 SYSTEMTIME UnixTimeToSystemTime(long int unixTime)
 {
     // 将 UNIX 时间戳转换为 time_t
@@ -21,6 +22,7 @@ SYSTEMTIME UnixTimeToSystemTime(long int unixTime)
     return systemTime;
 }
 
+//传入一个系统时，转化为文件时间返回
 FILETIME SystemTimeToFileTime(const SYSTEMTIME& systemTime) {
     FILETIME fileTime;
     SystemTimeToFileTime(&systemTime, &fileTime);

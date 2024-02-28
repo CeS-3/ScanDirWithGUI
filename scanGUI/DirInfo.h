@@ -22,6 +22,7 @@ public:
         return (DirPath == other.DirPath && earliestFile == other.earliestFile && latestFile == other.latestFile \
             && FileSum == other.FileSum && FileSumSize == other.FileSumSize  && (valid && other.valid)|| (!valid && !other.valid));
     }
+
     //等于符号重载
     bool operator!=(const DirInfo& other) const {
         return !(*this == other);

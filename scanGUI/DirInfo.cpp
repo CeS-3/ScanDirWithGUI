@@ -1,4 +1,6 @@
 ﻿#include"DirInfo.h"
+
+//若信息有效，用于以格式化字符串形式输出信息
 std::string DirInfo::outPut() const {
     std::string output;
     if (this->valid) {
@@ -16,6 +18,7 @@ std::string DirInfo::outPut() const {
     return output;
 }
 
+//输入两个一一对应的DirInfo向量，查找其中的差异并写入传入的字符串中
 void DirInfo::differ(const std::vector<DirInfo>& first, const std::vector<DirInfo>& second, std::string& output)
 {
     for (int i = 0; i < first.size(); i++) {

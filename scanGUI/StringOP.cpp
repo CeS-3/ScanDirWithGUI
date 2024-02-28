@@ -1,5 +1,6 @@
 ﻿#include"StringOP.h"
-//根据所给字符串与分割符将字符串分割为多个子串并存入队列中返回
+
+//传入一个字符串与分隔符字符，将传入的字符串按照分隔符进行切割，装入字符串向量中返回
 std::vector<std::string> splitString(const std::string& input, char delimiter) {
     std::vector<std::string> substrs;
     std::istringstream tokenStream(input);
@@ -9,7 +10,8 @@ std::vector<std::string> splitString(const std::string& input, char delimiter) {
     }
     return substrs;
 }
-//根据传入的字符串vector与分割符组合成字符串
+
+//传入一个字符串向量与分隔符字符（默认为空格），将向量中的各个字符串中间以分割符拼接起来返回
 std::string mergeString(std::vector<std::string> substrs, char delimiter) {
     std::ostringstream oss;
     //先转化为字符串
