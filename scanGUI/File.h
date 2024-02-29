@@ -63,7 +63,7 @@ public:
     //重载等号运算符
     bool operator==(const File& other) const{
         return (name == other.name && !CompareFileTime(&ftLastWriteTime, &(other.ftLastWriteTime)) && nFileSizeHigh == other.nFileSizeHigh && \
-            nFileSizeLow == other.nFileSizeLow && valid == other.valid);
+            nFileSizeLow == other.nFileSizeLow && valid && other.valid || (!valid && !other.valid));
     }
 
     //相应得设计不等号

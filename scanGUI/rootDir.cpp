@@ -1,5 +1,5 @@
 #include "rootDir.h"
-// 构建目录树 - 广度优先搜索
+// 构建目录树 - 广度优先
 void rootDir::BuildTreeBFS() {
     //先判断根目录的路径是否存在
     std::string searchPath = this->GetPath() + "\\*";  //构造路径
@@ -83,7 +83,7 @@ void rootDir::BuildTreeBFS() {
     Depth = CountDepth();
 }
 
-// 构建目录树 - 深度优先搜索
+// 构建目录树 - 深度优先
 void rootDir::BuildTreeDFS() {
     // 使用栈来模拟深度优先遍历
 
