@@ -113,7 +113,6 @@ void rootDir::BuildTreeDFS() {
                 std::string newPath = currentDir.first + "\\" + findFileData.cFileName;
 
                 if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-                    auto start_time = std::chrono::high_resolution_clock::now(); //记录开始时间
                     DirectoryNode* newDir = new(std::nothrow) DirectoryNode(newPath, findFileData.cFileName, currentDir.second);
                     if (newDir == nullptr) {
                         std::cerr << "堆分配失败" << std::endl;
@@ -124,7 +123,6 @@ void rootDir::BuildTreeDFS() {
                     stack.push({ newPath, newDir });
                 }
                 else if (findFileData.nFileSizeLow != 0 || findFileData.nFileSizeHigh != 0) {
-                    auto start_time = std::chrono::high_resolution_clock::now(); //记录开始时间
                     std::string newFilePath = currentDir.first + "\\" + findFileData.cFileName;
                     File newFile(findFileData.cFileName, findFileData.ftCreationTime, findFileData.nFileSizeHigh, findFileData.nFileSizeLow);
                     currentDir.second->AddFile(newFile);
