@@ -14,25 +14,25 @@ void rootDir::BuildTreeBFS() {
     //若找到根目录则进行遍历
     //构造队列，存储将要遍历的目录绝对路径，进行广度优先遍历
     //由于需要同时保存路径名称与构造的目录对象指针，所以使用pair
-    std::queue<std::pair<std::string, DirectoryNode*>> directoriesQueue;;
+    std::queue<DirectoryNode*> directoriesQueue;;
     //先将根目录存入队列
-    directoriesQueue.push({ this->path,this });
+    directoriesQueue.push(this);
     while (!directoriesQueue.empty()) {
         //取出队列最前的目录路径
         auto currentDir = directoriesQueue.front();
         //将其弹出队列
         directoriesQueue.pop();
-        searchPath = currentDir.first + "\\*";
+        searchPath = currentDir->GetPath() + "\\*";
         hFind = FindFirstFileA(searchPath.c_str(), &findFileData);
         //检查该目录是否存在
         if (hFind == INVALID_HANDLE_VALUE) {
             if (GetLastError() == ERROR_ACCESS_DENIED) {
                 // 访问被拒绝，可以忽略这个目录
-                std::cerr << "访问权限不足:" << currentDir.first + "\\" + findFileData.cFileName << std::endl;
+                std::cerr << "访问权限不足:" << currentDir->GetPath() + "\\" + findFileData.cFileName << std::endl;
                 continue;
             }
             else {
-                std::cerr << "未找到目录： " << currentDir.first << std::endl;
+                std::cerr << "未找到目录： " << currentDir->GetPath() << std::endl;
                 continue;
             }
         }
@@ -43,15 +43,15 @@ void rootDir::BuildTreeBFS() {
                 //若为目录，检查是否为.或..等无效目录
                 if (strcmp(findFileData.cFileName, ".") != 0 && strcmp(findFileData.cFileName, "..") != 0) {
                     //如果是有效目录则创建目录对象
-                    DirectoryNode* NewDirP = new(std::nothrow) DirectoryNode(currentDir.first + "\\" + findFileData.cFileName, findFileData.cFileName,currentDir.second);
+                    DirectoryNode* NewDirP = new(std::nothrow) DirectoryNode(currentDir->GetPath() + "\\" + findFileData.cFileName, findFileData.cFileName,currentDir);
                     if (NewDirP == nullptr) {
                         std::cerr << "堆分配失败" << std::endl;
                         return;
                     }
                     //将该子目录对象的指针加入到当前目录的子目录指针列表中
-                    currentDir.second->AddChild(NewDirP);
+                    currentDir->AddChild(NewDirP);
                     //将该 {子目录的路径:目录对象指针}对 存入队列中
-                    directoriesQueue.push({ NewDirP->GetPath(),NewDirP });
+                    directoriesQueue.push(NewDirP);
                     //子目录数加1
                     DirSum++;
                     //测试语句
@@ -63,9 +63,9 @@ void rootDir::BuildTreeBFS() {
                 //且文件的大小不为0
                 if (findFileData.nFileSizeLow != 0 || findFileData.nFileSizeHigh != 0) {
                     //则将文件信息存入当前目录对象的子文件列表中
-                    std::string NewFilePath = currentDir.first + "\\" + findFileData.cFileName;
+                    std::string NewFilePath = currentDir->GetPath() + "\\" + findFileData.cFileName;
                     File NewFile(findFileData.cFileName, findFileData.ftCreationTime, findFileData.nFileSizeHigh, findFileData.nFileSizeLow);
-                    currentDir.second->AddFile(NewFile);
+                    currentDir->AddFile(NewFile);
                     //文件数加1
                     FileSum++;
                     //判断文件名长度与最大文件名长度的大小
@@ -87,22 +87,22 @@ void rootDir::BuildTreeBFS() {
 void rootDir::BuildTreeDFS() {
     // 使用栈来模拟深度优先遍历
 
-    std::stack<std::pair<std::string, DirectoryNode*>> stack;
-    stack.push({ this->path, this });
+    std::stack<DirectoryNode*> stack;
+    stack.push(this);
     while (!stack.empty()) {
         auto currentDir = stack.top();
         stack.pop();
 
-        std::string searchPath = currentDir.first + "\\*";
+        std::string searchPath = currentDir->GetPath() + "\\*";
         WIN32_FIND_DATAA findFileData;
         HANDLE hFind = FindFirstFileA(searchPath.c_str(), &findFileData);
 
         if (hFind == INVALID_HANDLE_VALUE) {
             if (GetLastError() == ERROR_ACCESS_DENIED) {
-                std::cerr << "访问权限不足:" << currentDir.first + "\\" + findFileData.cFileName << std::endl;
+                std::cerr << "访问权限不足:" << currentDir->GetPath() + "\\" + findFileData.cFileName << std::endl;
             }
             else {
-                std::cerr << "未找到目录： " << currentDir.first << std::endl;
+                std::cerr << "未找到目录： " << currentDir->GetPath() << std::endl;
             }
             FindClose(hFind);
             continue;
@@ -110,22 +110,22 @@ void rootDir::BuildTreeDFS() {
 
         do {
             if (strcmp(findFileData.cFileName, ".") != 0 && strcmp(findFileData.cFileName, "..") != 0) {
-                std::string newPath = currentDir.first + "\\" + findFileData.cFileName;
+                std::string newPath = currentDir->GetPath() + "\\" + findFileData.cFileName;
 
                 if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-                    DirectoryNode* newDir = new(std::nothrow) DirectoryNode(newPath, findFileData.cFileName, currentDir.second);
+                    DirectoryNode* newDir = new(std::nothrow) DirectoryNode(newPath, findFileData.cFileName, currentDir);
                     if (newDir == nullptr) {
                         std::cerr << "堆分配失败" << std::endl;
                         return;
                     }
-                    currentDir.second->AddChild(newDir);
+                    currentDir->AddChild(newDir);
                     DirSum++;
-                    stack.push({ newPath, newDir });
+                    stack.push(newDir);
                 }
                 else if (findFileData.nFileSizeLow != 0 || findFileData.nFileSizeHigh != 0) {
-                    std::string newFilePath = currentDir.first + "\\" + findFileData.cFileName;
+                    std::string newFilePath = currentDir->GetPath() + "\\" + findFileData.cFileName;
                     File newFile(findFileData.cFileName, findFileData.ftCreationTime, findFileData.nFileSizeHigh, findFileData.nFileSizeLow);
-                    currentDir.second->AddFile(newFile);
+                    currentDir->AddFile(newFile);
                     FileSum++;
                     if (newFilePath.length() > MaxName.length()) {
                         MaxName = newFilePath;
